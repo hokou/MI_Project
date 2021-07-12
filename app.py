@@ -23,15 +23,15 @@ db.init_app(app)
 # Pages
 @app.route("/")
 def index():
-	return render_template("index.html")
+    return render_template("index.html")
 
 @app.route("/main")
 def main():
-	return render_template("main.html")
+    return render_template("main.html")
 
 @app.route("/member")
 def member():
-	return render_template("member.html")
+    return render_template("member.html")
 
 # blueprint
 app.register_blueprint(user_api)
@@ -40,4 +40,4 @@ app.register_blueprint(mi_api)
 
 
 if __name__ == "__main__":
-	app.run(host="0.0.0.0",port=4500)
+    app.run(host="0.0.0.0",port=4500)
