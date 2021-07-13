@@ -11,19 +11,50 @@
     <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css')}}"> -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css')}}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.4.3/fabric.js"></script>
     {% block css %}{% endblock %}
 </head>
 <body>
     <header class="container">
         <div class="head align-items-center">
-            <a href="/"><div class="title">main</div></a>
+            <a href="/"><div class="title"></div></a>
             <ul class="menu">
+                <li><img class="person" src="" alt=""><span id="member"></span></li>
                 <li id="login_signup">登入/註冊</li>
             </ul>
             </div>
         </div>
     </header>
+    <div class="login_mark">
+        <div class="user_model" id="login">
+            <form class="user_form" id="login_form" action="/api/user">
+                <img class="close" id="login_close" src="" alt="">
+                <!-- <img class="close" id="login_close" src="{{url_for('static', filename='images/close_black_24dp.svg')}}" alt=""> -->
+                <div class="top_bar"></div>
+                <div class="header">登入帳號</div>
+                <input class="input" id="login_email" type="email" placeholder="輸入電子信箱" name="email" autofocus required>
+                <input class="input" id="login_password" type="password" placeholder="輸入密碼" name="password" required>
+                <button class="button">登入帳戶</button>
+                <small class="message" id="login_message"></small>
+                <div class="link" id="signup_link">點此註冊帳號</div>
+            </form>
+        </div>
+        <div class="user_model" id="signup">
+            <form class="user_form" id="signup_form" action="/api/user">
+                <img class="close" id="signup_close" src="" alt="">
+                <!-- <img class="close" id="signup_close" src="{{url_for('static', filename='images/close_black_24dp.svg')}}" alt=""> -->
+                <div class="top_bar"></div>
+                <div class="header">註冊帳號</div>
+                <input class="input" id="signup_name" type="text" placeholder="輸入姓名" name="name" required>
+                <input class="input" id="signup_email" type="email" placeholder="輸入電子信箱" name="email" required>
+                <input class="input" id="signup_password" type="password" placeholder="輸入密碼" name="password" required>
+                <button class="button">註冊新帳戶</button>
+                <small class="message" id="signup_message"></small>
+                <div class="link" id="login_link">點此登入帳號</div>
+            </form>
+        </div>
+    </div>
     {% block main %}{% endblock %}
     <footer class="container">
         <div>COPYRIGHT © 2021</div>
