@@ -57,14 +57,24 @@ header .head {
 
 .menu {
     display: flex;
+    cursor: pointer;
+}
+
+.menu li span {
+    margin: auto 10px;
+    /* padding: auto 5px; */
 }
 
 .blockhide {
     display: none;
 }
 
+.mainicon {
+    content: url("/images/assignment_white_24dp.svg");
+}
+
 .person {
-    content: url(/images/account_circle_white_24dp.svg);
+    content: url("/images/account_circle_white_24dp.svg");
 }
 
 /* footer */

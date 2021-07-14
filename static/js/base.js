@@ -82,7 +82,12 @@ function user_get(){
             member.textContent = `${data.data["name"]}，您好`;
             console.log(data);
         } else {
+            // console.log(location.href);
+            // console.log(window.location.pathname);
             console.log(data);
+            if (window.location.pathname !== "/") {
+                document.location.href="/";
+            }
         }
     })
     .catch((error) => {
@@ -180,6 +185,7 @@ function user_logout(){
             logout.classList.add("blockhide");
             login_signup.classList.remove("blockhide");
             member.textContent = "";
+            document.location.href="/";
             console.log(data);
         } 
     })
@@ -206,6 +212,24 @@ function member_link() {
     .then((data) => {
         if (data.data != null) {
             document.location.href="/member";
+        } else {
+            show_1();
+        }
+    })
+    .catch((error) => {
+        console.log("err:", error)
+    });
+}
+
+let maincheck = document.querySelector("#maincheck")
+
+maincheck.addEventListener("click", main_link)
+
+function main_link() {
+    fetch(user_url).then((res) => res.json())
+    .then((data) => {
+        if (data.data != null) {
+            document.location.href="/main";
         } else {
             show_1();
         }

@@ -1,4 +1,12 @@
 
+input {
+    border: 2px #000 solid;
+    border-radius: 5px;
+    width: 100px;
+    text-align: center;
+    margin: 0 5px;
+}
+
 .imageedit {
     display: flex;
     margin: 0 auto;

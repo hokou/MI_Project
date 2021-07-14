@@ -15,9 +15,12 @@
                 </div>
             </div>
             <div class="col-md-8 imageedit">
-                <div class="imagehead">
-                    <p>WW：<input type="text"></p>
-                    <p>WL：<input type="text"></p>
+                <div class="imagehead m-1">
+                    <form action="">
+                        <label>WW：<input id="ww" type="number"></label>
+                        <label>WL：<input id="wl" type="number"></label>
+                        <input type="button" value="Reverse">
+                    </form>
                 </div>
                 <div>
                     <canvas id="imageedit" width="512px" height="512px"></canvas>
