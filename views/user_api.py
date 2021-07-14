@@ -1,6 +1,6 @@
 from flask import Blueprint, Flask, redirect, render_template, session, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-# from model import db, User
+from model import db, User
 import json
 from datetime import datetime
 
@@ -17,7 +17,7 @@ error_message = {
 
 
 # user
-@user_api.route("/", methods=["GET"])
+@user_api.route("", methods=["GET"])
 def user_get():
 	if request.method == "GET":
 		# session["id"] = 1
@@ -40,7 +40,7 @@ def user_get():
 	return jsonify(res), state
 
 
-@user_api.route("/", methods=["POST"])
+@user_api.route("", methods=["POST"])
 def user_signup():
 	if request.method == "POST":
 		try:
@@ -80,7 +80,7 @@ def user_signup():
 			return jsonify(res), state
 
 
-@user_api.route("/a", methods=["PATCH"])
+@user_api.route("", methods=["PATCH"])
 def user_login():
 	if request.method == "PATCH":
 		try:
@@ -122,7 +122,7 @@ def user_login():
 			return jsonify(res), state
 
 
-@user_api.route("/", methods=["DELETE"])
+@user_api.route("", methods=["DELETE"])
 def user_logout():
 	if request.method == "DELETE":
 		session.pop("id", None)

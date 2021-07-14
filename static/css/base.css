@@ -59,6 +59,10 @@ header .head {
     display: flex;
 }
 
+.blockhide {
+    display: none;
+}
+
 .person {
     content: url(/images/account_circle_white_24dp.svg);
 }
