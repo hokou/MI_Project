@@ -36,5 +36,9 @@
 {% endblock %}
 
 {% block script %}
+    <script>
+        let imgdata = JSON.parse('{{ imgdata|safe }}');
+        console.log(imgdata);
+    </script>
     <script src="{{ url_for('static', filename='js/main.js')}}"></script>
 {% endblock %}
