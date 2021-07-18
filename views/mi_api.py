@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from model import db
 import json
 from datetime import datetime
-from data_processing import dicom_load
+from views.data_processing import dicom_load
 
 mi_api = Blueprint('mi_api', __name__, url_prefix='/api/mi')
 

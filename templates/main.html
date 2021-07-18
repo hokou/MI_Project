@@ -9,24 +9,32 @@
 {% block main %}
     <section class="container">
         <div class="row justify-content-center">
-            <div class="col-md-1">
-                <div>
-                    edit block
+            <div class="col-md-1 imagetool p-2 border">
+                <div id="palette" class="palette m-1 d-flex justify-content-center my-2">
+                    <label class="d-flex">
+                        <img src="/images/palette_black_24dp.svg" alt="" srcset="">
+                        <input type="color" min="0" max="150" value="#0000FF" id="linecolor">  
+                    </label>
+                </div>
+                <div id="rect" class="rect m-2 d-flex justify-content-center  my-2">
+                    <button type="button">
+                        <img src="/images/crop_square_black_24dp.svg" alt="" srcset="">
+                    </button>
                 </div>
             </div>
-            <div class="col-md-8 imageedit">
-                <div class="imagehead m-1">
+            <div class="col-md-8 imageedit p-2">
+                <div class="imagehead m-2">
                     <form action="">
                         <label>WW：<input id="ww" type="number"></label>
                         <label>WL：<input id="wl" type="number"></label>
-                        <input type="button" value="Inverse">
+                        <button type="button" id="image-inverse" value="1">Inverse</button>
                     </form>
                 </div>
-                <div>
-                    <canvas id="imageedit" width="512px" height="512px"></canvas>
+                <div class="image-canvas m-2">
+                    <canvas class="image-main" id="image-main"></canvas>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 imagelabel p-2 border">
                 <div>
                     label data
                 </div>
@@ -36,9 +44,6 @@
 {% endblock %}
 
 {% block script %}
-    <script>
-        let imgdata = JSON.parse('{{ imgdata|safe }}');
-        console.log(imgdata);
-    </script>
-    <script src="{{ url_for('static', filename='js/main.js')}}"></script>
+<script src="{{ url_for('static', filename='js/customiseControls.js')}}"></script>
+<script src="{{ url_for('static', filename='js/main.js')}}"></script>
 {% endblock %}

@@ -1,5 +1,5 @@
 
-input {
+input,button {
     border: 2px #000 solid;
     border-radius: 5px;
     width: 100px;
@@ -15,6 +15,15 @@ input {
     align-items: center;
 }
 
+input[type="color"] {
+    width: 50px;
+}
+
 .imagehead {
     display: flex;
+}
+
+.image-main {
+    width: 512px;
+    height: auto;
 }
