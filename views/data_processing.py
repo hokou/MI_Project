@@ -26,7 +26,7 @@ def dicom_load(path):
         "WL":str(WL),
         "image":img_byte
     }
-    data = json.dumps(data)
+    # data = json.dumps(data)
 
     return data
 
@@ -161,7 +161,7 @@ def img_inverse(array):
 
 def img_to_byte(array, mode):
     img = Image.fromarray(np.uint8(array), mode)
-    img.show()
+    # img.show()
     data = BytesIO()
     img.save(data, "JPEG")
     data64 = base64.b64encode(data.getvalue())
