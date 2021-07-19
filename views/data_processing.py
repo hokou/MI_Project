@@ -7,8 +7,6 @@ from io import BytesIO
 import base64
 import json
 
-path = ""
-
 
 def dicom_load(path):
     dicomdata = dcmread(path)
@@ -169,4 +167,5 @@ def img_to_byte(array, mode):
 
     return img_byte
 
-data = dicom_load(path)
+
+# data = dicom_load(path)

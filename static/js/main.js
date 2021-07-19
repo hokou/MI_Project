@@ -8,6 +8,7 @@ let rect = document.querySelector('#rect');
 let ww = document.querySelector("#ww");
 let wl = document.querySelector("#wl");
 let inverse = document.querySelector('#image-inverse');
+let img_form = document.querySelector('#img-form');
 
 const canvas = new fabric.Canvas('image-main', {
     width: 512,
@@ -86,9 +87,46 @@ function add_rect(canvas){
     canvas.renderAll();
 }
 
+
+function inverse_change() {
+    if (image_inverse.value === "1") {
+        image_inverse.value = "0";
+    } else if (image_inverse.value === "0") {
+        image_inverse.value = "1";
+    }
+    console.log(image_inverse.value);
+}
+
+
+ww.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        // this.form.submit();
+        }
+    }
+);
+
+
+wl.addEventListener("keyup", function (event) {
+    if (event.keyCode === 13) {
+        event.preventDefault();
+        // this.form.submit();
+        }
+    }
+);
+
+
+inverse.addEventListener("click",function(event){
+    event.preventDefault();
+    // this.form.submit();
+    // inverse_change();
+})
+
+
 linecolor.addEventListener('change',function(){
     console.log(linecolor.value);
 })
+
 
 rect.addEventListener('click',function(){
     add_rect(canvas);

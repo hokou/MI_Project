@@ -18,3 +18,16 @@ def midata_get():
         state = 200
 
         return jsonify(res), state
+
+
+@mi_api.route("/renew", methods=["POST"])
+def midata_renew():
+    if request.method == "POST":
+        ww = request.form.get("ww")
+        wl = request.form.get("wl")
+        inverse = request.form.get("image_inverse")
+        print(ww,wl,inverse)
+        res = dicom_load(path)
+        state = 200
+
+        return jsonify(res), state
