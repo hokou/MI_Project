@@ -29,6 +29,39 @@ def dicom_load(path):
     return data
 
 
+def dicom_renew(path, data):
+    dicomdata = dcmread(path)
+    PI = dicomdata.PhotometricInterpretation
+    WW = int(data["ww"])
+    WL = int(data["wl"])
+    inverse = data["inverse"]
+    print(WW,WL,inverse)
+
+    imgarray = get_imgarray(path)
+    newimgarray = norm(imgarray, WL, WW)
+    newimgarray = np.uint8(newimgarray * 255)
+    if inverse == "1":
+        newimgarray = img_inverse(newimgarray)
+        new_inverse = "0"
+    elif inverse == "0":
+        new_inverse = "1"
+
+    if PI == "RGB":
+        img_byte = img_to_byte(newimgarray[0],"RGB")
+    else:
+        img_byte = img_to_byte(newimgarray[0],"L")
+
+    newdata = {
+        "ok":True,
+        "WW":str(WW),
+        "WL":str(WL),
+        "inverse":new_inverse,
+        "image":img_byte
+    }
+    # data = json.dumps(data)
+
+    return newdata
+
 def get_tag(path):
     dicomdata = dcmread(path)
     try :

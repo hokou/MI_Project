@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from model import db
 import json
 from datetime import datetime
-from views.data_processing import dicom_load
+from views.data_processing import dicom_load, dicom_renew
 
 mi_api = Blueprint('mi_api', __name__, url_prefix='/api/mi')
 
@@ -23,11 +23,8 @@ def midata_get():
 @mi_api.route("/renew", methods=["POST"])
 def midata_renew():
     if request.method == "POST":
-        ww = request.form.get("ww")
-        wl = request.form.get("wl")
-        inverse = request.form.get("image_inverse")
-        print(ww,wl,inverse)
-        res = dicom_load(path)
+        midata = request.get_json()
+        res = dicom_renew(path, midata)
         state = 200
 
         return jsonify(res), state

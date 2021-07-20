@@ -162,6 +162,7 @@ function user_login(){
             logout.classList.remove("blockhide");
             console.log(data);
             login_message.textContent = "登入成功";
+            user_get();
             setTimeout(close_1, 1000);
         } else if (data.error) {
             console.log(data);

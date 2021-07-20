@@ -87,6 +87,37 @@ function add_rect(canvas){
     canvas.renderAll();
 }
 
+function midata_renew() {
+    let url = "/api/mi/renew";
+    let midata = {
+        "ww": ww.value,
+        "wl": wl.value,
+        "inverse": inverse.value
+    };
+    console.log(midata);
+
+    fetch(url,{
+        method:'POST',
+        body:JSON.stringify(midata),
+        headers: {
+            'Content-Type': 'application/json'
+          }
+    }).then((res) => res.json())
+    .then((data) => {
+        if (data.ok) {
+            console.log(data);
+            inverse.value = data["inverse"];
+            image_render(data["image"]);
+        } else if (data.error) {
+            console.log(data);
+        }
+    })
+    .catch((error) => {
+        console.log("err:", error)
+    });
+
+}
+
 
 function inverse_change() {
     if (image_inverse.value === "1") {
@@ -102,6 +133,7 @@ ww.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
         // this.form.submit();
+        midata_renew();
         }
     }
 );
@@ -111,6 +143,7 @@ wl.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
         // this.form.submit();
+        midata_renew();
         }
     }
 );
@@ -118,6 +151,7 @@ wl.addEventListener("keyup", function (event) {
 
 inverse.addEventListener("click",function(event){
     event.preventDefault();
+    midata_renew();
     // this.form.submit();
     // inverse_change();
 })
