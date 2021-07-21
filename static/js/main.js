@@ -106,7 +106,7 @@ function midata_renew() {
     .then((data) => {
         if (data.ok) {
             console.log(data);
-            inverse.value = data["inverse"];
+            // inverse.value = data["inverse"];
             image_render(data["image"]);
         } else if (data.error) {
             console.log(data);
@@ -120,12 +120,12 @@ function midata_renew() {
 
 
 function inverse_change() {
-    if (image_inverse.value === "1") {
-        image_inverse.value = "0";
-    } else if (image_inverse.value === "0") {
-        image_inverse.value = "1";
+    if (inverse.value === "1") {
+        inverse.value = "0";
+    } else if (inverse.value === "0") {
+        inverse.value = "1";
     }
-    console.log(image_inverse.value);
+    console.log(inverse.value);
 }
 
 
@@ -133,9 +133,11 @@ ww.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
         // this.form.submit();
+        inverse.value = "0";
         midata_renew();
-        }
+        inverse.value = "1";
     }
+}
 );
 
 
@@ -143,7 +145,9 @@ wl.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
         event.preventDefault();
         // this.form.submit();
+        inverse.value = "0";
         midata_renew();
+        inverse.value = "1";
         }
     }
 );
@@ -152,6 +156,7 @@ wl.addEventListener("keyup", function (event) {
 inverse.addEventListener("click",function(event){
     event.preventDefault();
     midata_renew();
+    inverse_change();
     // this.form.submit();
     // inverse_change();
 })

@@ -42,9 +42,6 @@ def dicom_renew(path, data):
     newimgarray = np.uint8(newimgarray * 255)
     if inverse == "1":
         newimgarray = img_inverse(newimgarray)
-        new_inverse = "0"
-    elif inverse == "0":
-        new_inverse = "1"
 
     if PI == "RGB":
         img_byte = img_to_byte(newimgarray[0],"RGB")
@@ -55,7 +52,7 @@ def dicom_renew(path, data):
         "ok":True,
         "WW":str(WW),
         "WL":str(WL),
-        "inverse":new_inverse,
+        "inverse":inverse,
         "image":img_byte
     }
     # data = json.dumps(data)
