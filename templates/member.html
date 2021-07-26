@@ -9,10 +9,12 @@
 {% block main %}
     <section class="container">
         <div class="row justify-content-center">
-            <form method="POST" action="/api/data/upload" class="uploadform m-1">
-                <input type="file" accept=".dcm" multiple="multiple" value="請選擇檔案" />
-                <button type="submit">上傳</button>
-            </form>
+            <!-- <form method="POST" action="/api/data/upload" class="uploadform m-1"> -->
+            <div class="d-flex m-2">
+                <input type="file" id="file-upload" accept=".dcm" multiple="multiple" value="請選擇檔案" />
+                <button type="button" id="file-btn">上傳</button>
+            </div>
+            <!-- </form> -->
         </div>
     </section>
     <section class="container">
