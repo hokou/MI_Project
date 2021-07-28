@@ -10,13 +10,18 @@ file_upload.addEventListener("change", (e) => {
 file_btn.addEventListener("click", upload);
 
 function upload() {
-    let files = file_upload.files[0];
+    let files = file_upload.files;
     if (typeof (files) == "undefined" || files.size <= 0) {
         alert("請選擇檔案");
         return;
     }
     let form = new FormData();
-    form.append("files", files[0]);
+
+    for (let file of files) {
+      // form.append("files[]",file, file.name);
+      form.append("files",file, file.name);
+    }
+    console.log(form);
     fetch('/api/data/upload', {
     method: 'POST',
     body: form,
