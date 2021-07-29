@@ -8,7 +8,7 @@ username = os.getenv('username')
 password = os.getenv('password')
 database = os.getenv('database')
 secretkey = os.getenv('secretkey')
-
+uploadfolder = os.path.join(os.getcwd(),"datafiles")
 
 class Config():
     JSON_AS_ASCII=False
@@ -20,3 +20,4 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{username}:{password}@{host}:3306/{database}"
     ENV = 'development'
+    UPLOAD_FOLDER = uploadfolder

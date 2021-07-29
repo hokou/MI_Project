@@ -4,11 +4,14 @@ from model import db
 import json
 from datetime import datetime
 import os
+from flask import current_app
 
 data_api = Blueprint('data_api', __name__, url_prefix='/api/data')
 
 @data_api.route("/upload", methods=["POST"])
 def upload():
+    session["uploadfolder"] = current_app.config['UPLOAD_FOLDER']
+    print(session["uploadfolder"])
     
     # 使用 js 上傳
     print(request.files.getlist("files"))
