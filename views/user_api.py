@@ -125,11 +125,12 @@ def user_login():
 @user_api.route("", methods=["DELETE"])
 def user_logout():
     if request.method == "DELETE":
-        session.pop("id", None)
-        session.pop("name", None)
-        session.pop("email", None)
-        # session.pop("password", None)
+        # session.pop("id", None)
+        # session.pop("name", None)
+        # session.pop("email", None)
         session.clear()
+        for key in list(session.keys()):
+            session.pop(key)
         res = {
             "ok": True
         }
