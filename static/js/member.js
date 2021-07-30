@@ -25,5 +25,16 @@ function upload() {
     fetch('/api/data/upload', {
     method: 'POST',
     body: form,
+    }).then((res) => res.json())
+    .then((data) => {
+        if (data.ok) {
+          alert("上傳 OK");
+        } else if (data.error) {
+            console.log(data);
+            alert(data.message);
+        }
     })
+    .catch((error) => {
+        console.log("err:", error)
+    });
 }

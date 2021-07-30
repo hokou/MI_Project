@@ -23,7 +23,7 @@ def user_get():
         # session["id"] = 1
         # session.clear()
         if "id" in session:
-            print("OK")
+            print("id OK")
             data = {
                 "id": session["id"],
                 "name": session["name"],
