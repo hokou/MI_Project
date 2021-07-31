@@ -1,10 +1,11 @@
 from flask import Blueprint, Flask, redirect, render_template, session, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from model import db, Group, Files
+from model import db, Group, Files, FileData
 import json
 from datetime import datetime
 import os
 from flask import current_app
+from views.data_processing import dicom_load, dicom_img_save
 
 data_api = Blueprint('data_api', __name__, url_prefix='/api/data')
 
@@ -26,6 +27,8 @@ def upload():
             user_group = session["group_num"] 
             upload_path = os.path.join(upload_folder,"files",str(user_id),str(user_group))
             check_folder(upload_path)
+            img_path = os.path.join(upload_folder,"imgs",str(user_id),str(user_group))
+            check_folder(img_path)
 
             # 使用 js 上傳
             files = request.files.getlist("files")
@@ -33,6 +36,9 @@ def upload():
             # uploaded_files = request.files.getlist("file_upload")
             if check_filename(files):
                 save_files(files, upload_path)
+                files_name = list(session["files_name_list"])
+                group_id = session["group_id"]
+                add_files_data(group_id, files_name, upload_path, img_path)
             else:
                 res = error_json(error_message["1"])
                 state = 201
@@ -72,9 +78,10 @@ def creat_group(id):
 def check_filename(files):
     files_name = []
     for getfile in files:
-        files_name.append(getfile.filename)
+        files_name.append(getfile.filename.replace(".dcm",""))
     group_id = session["group_id"]
     query = Files.query.filter(Files.file_name.in_(files_name)).filter(Files.group_id==group_id).first()
+    session["files_name_list"] = files_name
     if query == None:
         add_files_name(group_id, files_name)
         return True
@@ -93,6 +100,21 @@ def add_files_name(group_id, files_name):
     data = []
     for name in files_name:
         file_data = Files(group_id=int(group_id),file_name=name)
+        data.append(file_data)
+    db.session.add_all(data)
+    db.session.commit()
+
+
+def add_files_data(group_id, files_name, upload_path, img_path):
+    data = []
+    for name in files_name:
+        query = Files.query.filter_by(group_id=int(group_id), file_name=name).first()
+        file_id = query.file_id
+        file_path = os.path.join(upload_path, f"{name}.dcm")
+        load_data = dicom_load(file_path)
+        img_save_path = os.path.join(img_path, f"{name}.jpg")
+        dicom_img_save(file_path, img_save_path)
+        file_data = FileData(file_id=file_id, file_name=name, patient_ID=load_data["PID"], patient_name=load_data["PName"], rows=load_data["Rows"], columns=load_data["Columns"], ww=load_data["WW"] ,wl=load_data["WL"])
         data.append(file_data)
     db.session.add_all(data)
     db.session.commit()

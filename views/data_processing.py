@@ -59,6 +59,7 @@ def dicom_renew(path, data):
 
     return newdata
 
+
 def get_tag(path):
     dicomdata = dcmread(path)
     try :
@@ -198,4 +199,25 @@ def img_to_byte(array, mode):
     return img_byte
 
 
-# data = dicom_load(path)
+def dicom_img_save(path, img_path):
+    dicomdata = dcmread(path)
+    PI = dicomdata.PhotometricInterpretation
+    Modality = dicomdata.Modality
+    imgarray = get_imgarray(path)
+    if Modality == "CR" or Modality == "DX":
+        newimgarray = imgarray[0].astype("uint8")
+        mode = "L"
+    else:
+        if PI == "RGB":
+            newimgarray = imgarray[0].astype("uint8")
+            mode = "RGB"
+        else:
+            WW, WL = get_WW_WL(path)
+            newimgarray = norm(imgarray, WL, WW)
+            newimgarray = np.uint8(newimgarray * 255)
+            newimgarray = newimgarray[0]
+            mode = "L"
+    img = Image.fromarray(np.uint8(newimgarray), mode)
+    img.save(img_path)
+
+
