@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, redirect, render_template, session, url_for, request, jsonify
+from flask import Blueprint, Flask, redirect, render_template, session, url_for, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from model import db, Group, Files, FileData
 import json
@@ -54,6 +54,18 @@ def upload():
             res = error_json(error_message["2"])
             state = 500
             return jsonify(res), state
+
+
+@data_api.route("/imgs/<path:userid>/<path:filename>")
+def imgs_url(userid, filename):
+    if "id" in session:
+        if int(session["id"]) == int(userid):
+            dirpath = os.path.join(current_app.config['UPLOAD_FOLDER'], 'imgs', f'{userid}')
+            return send_from_directory(dirpath, filename, as_attachment=False)
+        else:
+            return "error id"
+    else:
+        return ""
 
 
 def check_folder(path):
