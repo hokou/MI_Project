@@ -1,3 +1,15 @@
 section div{
-    height:500px;
+    height:80vh;
+}
+
+.title-img {
+    width: 512px;
+    height: auto;
+}
+
+.title-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    content: url("/images/mi-title01.jpg");
 }
