@@ -13,6 +13,7 @@ data_api = Blueprint('data_api', __name__, url_prefix='/api/data')
 error_message = {
     "1":"檔案重複",
     "2":"伺服器錯誤",
+    "3":"錯誤的使用者"
 }
 
 
@@ -56,11 +57,32 @@ def upload():
             return jsonify(res), state
 
 
-@data_api.route("/imgs/<path:userid>/<path:filename>")
-def imgs_url(userid, filename):
+@data_api.route("/load")
+def load_data():
+    try:
+        if "id" in session:
+            user_id = session["id"]
+            creat_group(int(user_id))
+            group_num = session["group_num"]
+            query = FileData.query.filter_by(user_id=user_id, group_num=group_num).all()
+            res = load_files_data(query)
+            state = 200
+        else:
+            res = error_json(error_message["3"])
+            state = 400
+        return jsonify(res), state
+    except Exception as e:
+        print(e)
+        res = error_json(error_message["2"])
+        state = 500
+        return jsonify(res), state
+
+
+@data_api.route("/imgs/<path:userid>/<path:groupnum>/<path:filename>")
+def imgs_url(userid, groupnum, filename):
     if "id" in session:
         if int(session["id"]) == int(userid):
-            dirpath = os.path.join(current_app.config['UPLOAD_FOLDER'], 'imgs', f'{userid}')
+            dirpath = os.path.join(current_app.config['UPLOAD_FOLDER'], 'imgs', f'{userid}', f'{groupnum}')
             return send_from_directory(dirpath, filename, as_attachment=False)
         else:
             return "error id"
@@ -120,16 +142,50 @@ def add_files_name(group_id, files_name):
 def add_files_data(group_id, files_name, upload_path, img_path):
     data = []
     for name in files_name:
+        user_id = session["id"]
+        group_num = session["group_num"]
         query = Files.query.filter_by(group_id=int(group_id), file_name=name).first()
         file_id = query.file_id
         file_path = os.path.join(upload_path, f"{name}.dcm")
         load_data = dicom_load(file_path)
         img_save_path = os.path.join(img_path, f"{name}.jpg")
         dicom_img_save(file_path, img_save_path)
-        file_data = FileData(file_id=file_id, file_name=name, patient_ID=load_data["PID"], patient_name=load_data["PName"], rows=load_data["Rows"], columns=load_data["Columns"], ww=load_data["WW"] ,wl=load_data["WL"])
+        file_data = FileData(user_id=user_id, group_num=group_num, file_id=file_id, file_name=name, patient_ID=load_data["PID"], patient_name=load_data["PName"], rows=load_data["Rows"], columns=load_data["Columns"], ww=load_data["WW"] ,wl=load_data["WL"])
         data.append(file_data)
     db.session.add_all(data)
     db.session.commit()
+
+
+def load_files_data(query):
+    data = []
+    id = session["id"]
+    group_num = session["group_num"]
+    for file_data in query:
+        files_data = files_json(file_data, id, group_num)
+        data.append(files_data)
+        
+    res = {
+        "id": id,
+        "group_num": group_num,
+        "data": data
+    }
+
+    return res
+
+
+def files_json(data, id, group_num):
+    form = {}
+    form["file_id"] = data.file_id
+    form["file_name"] = data.file_name
+    form["patient_ID"] = data.patient_ID
+    form["patient_name"] = data.patient_name
+    form["rows"] = data.rows
+    form["columns"] = data.columns
+    form["ww"] = data.ww
+    form["wl"] = data.wl
+    form["img"] = f"/api/data/imgs/{id}/{group_num}/{data.file_name}.jpg"
+    
+    return form
 
 
 def error_json(error_message):

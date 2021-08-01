@@ -52,6 +52,8 @@ class Files(db.Model):
 class FileData(db.Model):
     __tablename__ = 'filedata'
     id = db.Column(db.BigInteger, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.BigInteger, nullable=False)
+    group_num = db.Column(db.BigInteger, nullable=False)
     file_id = db.Column(db.BigInteger, db.ForeignKey('files.file_id'), nullable=False)
     file_name = db.Column(db.VARCHAR(255), nullable=False)
     patient_ID = db.Column(db.VARCHAR(255), nullable=False)
@@ -62,7 +64,9 @@ class FileData(db.Model):
     wl = db.Column(db.VARCHAR(255), nullable=False)
     create_time = db.Column(db.DateTime, default=datetime.now)
 
-    def __init__(self, file_id, file_name, patient_ID, patient_name, rows, columns, ww, wl):
+    def __init__(self, user_id, group_num, file_id, file_name, patient_ID, patient_name, rows, columns, ww, wl):
+        self.user_id = user_id
+        self.group_num = group_num
         self.file_id = file_id
         self.file_name = file_name
         self.patient_ID = patient_ID
