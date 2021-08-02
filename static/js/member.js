@@ -67,28 +67,27 @@ function addblock(data){
     for (let i=0;i<data.length;i++) {
         let div = document.createElement("div");
         let imgdiv = document.createElement("div");
+        let imga = document.createElement("a");
         let img = document.createElement("img");
         let p1 = document.createElement("p");
         let p2 = document.createElement("p");
         let p3 = document.createElement("p");
-        let input = document.createElement("input");
 
         main.appendChild(div);
         div.appendChild(imgdiv);
-        imgdiv.appendChild(img);
+        imgdiv.appendChild(imga);
+        imga.appendChild(img);
         div.appendChild(p1);
         div.appendChild(p2);
         div.appendChild(p3);
-        div.appendChild(input);
 
-        div.className = "sub-block";
+        // div.className = "sub-block";
+        div.classList.add("sub-block", "m-1");
         imgdiv.className = "img-block";
+        imga.href = `/api/data/file/${data[i]["file_id"]}`;
         img.src = data[i]["img"];
         p1.textContent = data[i]["file_name"];
         p2.textContent = `patient ID：${data[i]["patient_ID"]}`;
         p3.textContent = `patient Name：${data[i]["patient_name"]}`;
-        input.type="radio";
-        input.name="userchoice";
-        input.value= `${i}`;
     }
 }
