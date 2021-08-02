@@ -75,3 +75,20 @@ class FileData(db.Model):
         self.columns = columns
         self.ww = ww
         self.wl = wl
+
+
+class LabelData(db.Model):
+    __tablename__ = 'labeldata'
+    id = db.Column(db.BigInteger, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.BigInteger, nullable=False)
+    file_id = db.Column(db.BigInteger, nullable=False)
+    label_num = db.Column(db.Integer, nullable=False)
+    data = db.Column(db.Text, nullable=False)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+    update_time = db.Column(db.DateTime, onupdate=datetime.now, default=datetime.now)
+
+    def __init__(self, user_id, file_id, label_num, data):
+        self.user_id = user_id
+        self.file_id = file_id
+        self.label_num = label_num
+        self.data = data

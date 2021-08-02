@@ -171,3 +171,10 @@ rect.addEventListener('click',function(){
     add_rect(canvas);
 })
 
+canvas.on('object:modified', (e) => {
+    console.log(e.target);
+});
+
+canvas.on('mouse:down', (e) => {
+    console.log(e.target);
+}); 
