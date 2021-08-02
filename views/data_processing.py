@@ -8,12 +8,15 @@ import base64
 import json
 
 
-def dicom_load(path):
+def dicom_load(path, imgmode=1):
     dicomdata = dcmread(path)
     PatientID, PatientName, Rows, Columns = get_tag(path)
 
     WW, WL = get_WW_WL(path)
-    img_byte = dicom_img(path)
+    if imgmode:
+        img_byte = dicom_img(path)
+    else:
+        img_byte = None
 
     data = {
         "PID":str(PatientID),

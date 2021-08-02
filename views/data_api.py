@@ -16,6 +16,8 @@ error_message = {
     "3":"錯誤的使用者"
 }
 
+files_path = "files"
+imgs_path = "imgs"
 
 @data_api.route("/upload", methods=["POST"])
 def upload():
@@ -26,9 +28,9 @@ def upload():
             user_id = session["id"]
             creat_group(int(user_id))
             user_group = session["group_num"] 
-            upload_path = os.path.join(upload_folder,"files",str(user_id),str(user_group))
+            upload_path = os.path.join(upload_folder,files_path,str(user_id),str(user_group))
             check_folder(upload_path)
-            img_path = os.path.join(upload_folder,"imgs",str(user_id),str(user_group))
+            img_path = os.path.join(upload_folder,imgs_path,str(user_id),str(user_group))
             check_folder(img_path)
 
             # 使用 js 上傳
@@ -78,11 +80,29 @@ def load_data():
         return jsonify(res), state
 
 
-@data_api.route("/imgs/<path:userid>/<path:groupnum>/<path:filename>")
+@data_api.route("/file/<int:file_id>")
+def get_file(file_id):
+    if "id" in session:
+        query = FileData.query.filter_by(file_id=file_id).first()
+        if query != None:
+            if query.user_id == int(session["id"]):
+                upload_folder = current_app.config['UPLOAD_FOLDER']
+                path = os.path.join(upload_folder,files_path,str(query.user_id),str(query.group_num))
+                session["file_path"] = f"{path}/{query.file_name}.dcm"
+                return redirect(url_for("main"))
+            else:
+                return redirect(url_for("member"))
+        else:
+            return redirect(url_for("member"))
+    else:
+        return redirect(url_for("index"))
+
+
+@data_api.route("/imgs/<userid>/<groupnum>/<path:filename>")
 def imgs_url(userid, groupnum, filename):
     if "id" in session:
         if int(session["id"]) == int(userid):
-            dirpath = os.path.join(current_app.config['UPLOAD_FOLDER'], 'imgs', f'{userid}', f'{groupnum}')
+            dirpath = os.path.join(current_app.config['UPLOAD_FOLDER'], imgs_path, f'{userid}', f'{groupnum}')
             return send_from_directory(dirpath, filename, as_attachment=False)
         else:
             return "error id"
@@ -147,7 +167,7 @@ def add_files_data(group_id, files_name, upload_path, img_path):
         query = Files.query.filter_by(group_id=int(group_id), file_name=name).first()
         file_id = query.file_id
         file_path = os.path.join(upload_path, f"{name}.dcm")
-        load_data = dicom_load(file_path)
+        load_data = dicom_load(file_path, imgmode=0)
         img_save_path = os.path.join(img_path, f"{name}.jpg")
         dicom_img_save(file_path, img_save_path)
         file_data = FileData(user_id=user_id, group_num=group_num, file_id=file_id, file_name=name, patient_ID=load_data["PID"], patient_name=load_data["PName"], rows=load_data["Rows"], columns=load_data["Columns"], ww=load_data["WW"] ,wl=load_data["WL"])
