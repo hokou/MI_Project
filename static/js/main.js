@@ -9,11 +9,14 @@ let ww = document.querySelector("#ww");
 let wl = document.querySelector("#wl");
 let inverse = document.querySelector('#image-inverse');
 let img_form = document.querySelector('#img-form');
+let label_data = document.querySelector('#label-data');
 
 const canvas = new fabric.Canvas('image-main', {
     width: 512,
     height: 512
 });
+
+let canvas_state = canvas.toJSON()
 
 
 mi_fetch();
@@ -70,7 +73,7 @@ function image_render(img) {
     });
 }
 
-function add_rect(canvas){
+function add_rect(canvas) {
     const rect = new fabric.Rect({
         width: 40,
         height: 40,
@@ -169,12 +172,51 @@ linecolor.addEventListener('change',function(){
 
 rect.addEventListener('click',function(){
     add_rect(canvas);
+    label_renew();
 })
 
+
 canvas.on('object:modified', (e) => {
-    console.log(e.target);
+    // console.log(e.target);
+    label_renew();
 });
 
 canvas.on('mouse:down', (e) => {
-    console.log(e.target);
-}); 
+    // console.log(e.target);
+    label_renew();
+});
+
+function label_renew() {
+    canvas_state = canvas.toJSON();
+    let label_list = label_coordinate(canvas_state);
+
+    while (label_data.firstChild) {
+        label_data.removeChild(label_data.firstChild);
+    };
+
+    for (let i=0;i<label_list.length;i++) {
+        let p = document.createElement("p");
+        label_data.appendChild(p);
+        // p.textContent = label_list[i].toString();
+        p.textContent = label_list[i].join(", ");;
+        console.log(label_list[i]);
+    }
+}
+
+function label_coordinate (canvas_data) {
+    let data = canvas_data.objects;
+    let label_list = [];
+    for (i = 0;i<data.length;i++){
+        label_list.push(coordinate_conversion(data[i]));
+    }
+    return label_list
+}
+
+function coordinate_conversion(data) {
+    let top = Math.round(data.top);
+    let left = Math.round(data.left);
+    let height = Math.round(data.height * data.scaleY);
+    let width = Math.round(data.width * data.scaleX);
+    let label = [top, left, height, width];
+    return label
+}

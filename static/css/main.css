@@ -11,7 +11,15 @@ input,button {
     display: flex;
     margin: 0 auto;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.imagelabel {
+    display: flex;
+    margin: 0 auto;
+    flex-direction: column;
+    justify-content: flex-start;
     align-items: center;
 }
 
@@ -26,4 +34,9 @@ input[type="color"] {
 .image-main {
     width: 512px;
     height: auto;
+}
+
+.label-data p {
+    border: 1px #000;
+    
 }
