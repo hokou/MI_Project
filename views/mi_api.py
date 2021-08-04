@@ -57,10 +57,6 @@ def labeldata_get():
 @mi_api.route("/labelsave", methods=["POST"])
 def label_save():
     if request.method == "POST":
-        user_id = session["id"]
-        data = request.get_json()
-        res = label_add_or_update(data, user_id)
-        state = 200
         try:
             user_id = session["id"]
             data = request.get_json()
@@ -76,12 +72,15 @@ def label_save():
             return jsonify(res), state
 
 
-@mi_api.route("/download/<int:fileid>")
+@mi_api.route("/download/<fileid>")
 def text_url(fileid):
     if "id" in session:
-        query = LabelData.query.filter_by(file_id=int(fileid)).first()
+        query = LabelData.query.filter_by(file_id=fileid).first()
         if int(session["id"]) == int(query.user_id):
-            path, name = labeltext_save(query.data)
+            now = datetime.now()
+            time = now.strftime("%Y%m%d%H%M%S")
+            print("time",time)
+            path, name = labeltext_save(query.data,time)
             return send_from_directory(path, name, as_attachment=True)
         else:
             return "error id"
@@ -117,8 +116,9 @@ def label_add_or_update(data, user_id):
         db.session.add(label_add)
         db.session.commit()
     else:
-        query.label_num = int(label_num)
-        query.data = str(label_data)
+        label_update = LabelData.query.filter_by(file_id=file_id).first()
+        label_update.label_num = int(label_num)
+        label_update.data = str(label_data)
         db.session.commit()
     res = {
         "ok": True
@@ -127,15 +127,24 @@ def label_add_or_update(data, user_id):
     return res
 
 
-def labeltext_save(data):
-    now = datetime.now()
-    time = datetime.strftime(now, "%Y%m%d%H%M%S")
+def labeltext_save(data, time):
     name = f"label_{time}.txt"
-    path = "./download/"
+    path = os.path.join(os.getcwd(),"download")
+    check_folder(path)
     remove_file(path)
-    with open(os.path.join(path,name), 'w') as f:
-        f.write(data)
+    print(os.path.join(path,name))
+    f = open(os.path.join(path,name), 'w')
+    f.write(data)
+    f.close()
+    # with open(os.path.join(path,name), 'w') as f:
+    #     f.write(data)
+    #     f.close()
     return path, name
+
+
+def check_folder(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
 def remove_file(path):

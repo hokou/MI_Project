@@ -19,7 +19,7 @@ const canvas = new fabric.Canvas('image-main', {
     height: 512
 });
 
-let canvas_state = canvas.toJSON()
+let canvas_state = canvas.toJSON();
 
 
 mi_fetch();
@@ -205,7 +205,7 @@ function label_renew(label_list) {
         label_data.appendChild(p);
         // p.textContent = label_list[i].toString();
         // p.textContent = label_list[i].join(", ");
-        let new_label = text_pad(label_list[i], len=4)
+        let new_label = text_pad(label_list[i], len=4);
         p.textContent = new_label.join(", ");
         // console.log(label_list[i]);
     }
@@ -272,7 +272,6 @@ function label_save_output(mode) {
         "num":label_list.length,
         "label":label_list
     };
-    // console.log(label_data);
     label_save_fetch(label_data, mode);
 }
 
@@ -289,9 +288,10 @@ function label_save_fetch(label_data, mode) {
         if (data.ok) {
             console.log(data);
             if (mode === "save"){
+                console.log(mode);
                 alert("儲存 OK");
             } else if (mode === "output") {
-                alert("輸出 OK");
+                // alert("輸出 OK");
                 console.log(mode);
                 let fileid = label_hid.value;
                 let url = `/api/mi/download/${fileid}`;

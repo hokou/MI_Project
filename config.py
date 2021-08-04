@@ -16,8 +16,15 @@ class Config():
     JSON_SORT_KEYS = False
     SECRET_KEY = secretkey.encode(encoding="utf-8")
     JSONIFY_PRETTYPRINT_REGULAR = True
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{username}:{password}@{host}:3306/{database}"
     ENV = 'development'
     UPLOAD_FOLDER = uploadfolder
+    # SQLALCHEMY_ENGINE_OPTIONS = {
+    #     "pool_pre_ping": True,
+    #     "pool_recycle": 300,
+    #     'pool_timeout': 600,
+    #     'pool_size': 10,
+    #     'max_overflow': 5,
+    # }
