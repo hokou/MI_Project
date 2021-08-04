@@ -11,6 +11,7 @@ let inverse = document.querySelector('#image-inverse');
 let img_form = document.querySelector('#img-form');
 let label_data = document.querySelector('#label-data');
 let label_save_btn = document.querySelector('#label_save_btn');
+let label_output_btn = document.querySelector('#label_output_btn');
 let label_hid = document.querySelector('#label-hid');
 
 const canvas = new fabric.Canvas('image-main', {
@@ -254,9 +255,16 @@ function label_fetch() {
     });
 }
 
-label_save_btn.addEventListener('click', label_save)
+label_save_btn.addEventListener('click',function(){
+    label_save_output("save");
+})
 
-function label_save() {
+
+label_output_btn.addEventListener('click',function(){
+    label_save_output("output");
+})
+
+function label_save_output(mode) {
     canvas_state = canvas.toJSON();
     let label_list = label_coordinate(canvas_state);
     let label_data = {
@@ -265,10 +273,10 @@ function label_save() {
         "label":label_list
     };
     // console.log(label_data);
-    label_save_fetch(label_data);
+    label_save_fetch(label_data, mode);
 }
 
-function label_save_fetch(label_data) {
+function label_save_fetch(label_data, mode) {
     let url = "/api/mi/labelsave";
     fetch(url,{
         method:'POST',
@@ -280,7 +288,15 @@ function label_save_fetch(label_data) {
     .then((data) => {
         if (data.ok) {
             console.log(data);
-            alert("儲存 OK");
+            if (mode === "save"){
+                alert("儲存 OK");
+            } else if (mode === "output") {
+                alert("輸出 OK");
+                console.log(mode);
+                let fileid = label_hid.value;
+                let url = `/api/mi/download/${fileid}`;
+                document.location.href = url;
+            }
         } else if (data.error) {
             console.log(data);
             alert(data.message);

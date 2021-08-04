@@ -1,9 +1,10 @@
-from flask import Blueprint, Flask, redirect, render_template, session, url_for, request, jsonify
+from flask import Blueprint, Flask, redirect, render_template, session, url_for, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from model import db, LabelData
 import json
 from datetime import datetime
 from views.data_processing import dicom_load, dicom_renew
+import os
 
 mi_api = Blueprint('mi_api', __name__, url_prefix='/api/mi')
 
@@ -56,6 +57,10 @@ def labeldata_get():
 @mi_api.route("/labelsave", methods=["POST"])
 def label_save():
     if request.method == "POST":
+        user_id = session["id"]
+        data = request.get_json()
+        res = label_add_or_update(data, user_id)
+        state = 200
         try:
             user_id = session["id"]
             data = request.get_json()
@@ -69,6 +74,19 @@ def label_save():
             state = 500
 
             return jsonify(res), state
+
+
+@mi_api.route("/download/<int:fileid>")
+def text_url(fileid):
+    if "id" in session:
+        query = LabelData.query.filter_by(file_id=int(fileid)).first()
+        if int(session["id"]) == int(query.user_id):
+            path, name = labeltext_save(query.data)
+            return send_from_directory(path, name, as_attachment=True)
+        else:
+            return "error id"
+    else:
+        return ""
 
 
 def label_get(file_id):
@@ -107,6 +125,22 @@ def label_add_or_update(data, user_id):
     }
 
     return res
+
+
+def labeltext_save(data):
+    now = datetime.now()
+    time = datetime.strftime(now, "%Y%m%d%H%M%S")
+    name = f"label_{time}.txt"
+    path = "./download/"
+    remove_file(path)
+    with open(os.path.join(path,name), 'w') as f:
+        f.write(data)
+    return path, name
+
+
+def remove_file(path):
+    for f in os.listdir(path):
+        os.remove(os.path.join(path, f))
 
 
 def error_json(error_message):
