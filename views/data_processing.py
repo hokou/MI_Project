@@ -8,7 +8,7 @@ import base64
 import json
 
 
-def dicom_load(path, imgmode=1):
+def dicom_load(path, file_id=None, imgmode=1):
     dicomdata = dcmread(path)
     PatientID, PatientName, Rows, Columns = get_tag(path)
 
@@ -19,6 +19,7 @@ def dicom_load(path, imgmode=1):
         img_byte = None
 
     data = {
+        "fileid":file_id,
         "PID":str(PatientID),
         "PName":str(PatientName),
         "Rows":str(Rows),

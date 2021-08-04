@@ -10,6 +10,8 @@ let wl = document.querySelector("#wl");
 let inverse = document.querySelector('#image-inverse');
 let img_form = document.querySelector('#img-form');
 let label_data = document.querySelector('#label-data');
+let label_save_btn = document.querySelector('#label_save_btn');
+let label_hid = document.querySelector('#label-hid');
 
 const canvas = new fabric.Canvas('image-main', {
     width: 512,
@@ -21,11 +23,13 @@ let canvas_state = canvas.toJSON()
 
 mi_fetch();
 fabric_setting();
+label_fetch();
 
 function mi_fetch() {
     let url = "/api/mi/data";
     fetch(url).then(response => response.json())
         .then((result)=>{
+            label_hid.value = result.fileid;
             image_data(result);
             // fabric_setting();
         }).catch(error => console.log("err:", error));
@@ -73,12 +77,12 @@ function image_render(img) {
     });
 }
 
-function add_rect(canvas) {
+function add_rect(canvas, width=40, height=40, left=50, top=50) {
     const rect = new fabric.Rect({
-        width: 40,
-        height: 40,
-        left: 50,
-        top: 50,
+        width: width,
+        height: height,
+        left: left,
+        top: top,
         fill: 'transparent', // 不要填滿
         stroke: linecolor.value, // 邊框顏色
         strokeWidth: 1.5
@@ -178,18 +182,19 @@ rect.addEventListener('click',function(){
 
 canvas.on('object:modified', (e) => {
     // console.log(e.target);
-    label_renew();
+    canvas_state = canvas.toJSON();
+    let label_list = label_coordinate(canvas_state);
+    label_renew(label_list);
 });
 
 canvas.on('mouse:down', (e) => {
     // console.log(e.target);
-    label_renew();
-});
-
-function label_renew() {
     canvas_state = canvas.toJSON();
     let label_list = label_coordinate(canvas_state);
+    label_renew(label_list);
+});
 
+function label_renew(label_list) {
     while (label_data.firstChild) {
         label_data.removeChild(label_data.firstChild);
     };
@@ -198,8 +203,10 @@ function label_renew() {
         let p = document.createElement("p");
         label_data.appendChild(p);
         // p.textContent = label_list[i].toString();
-        p.textContent = label_list[i].join(", ");;
-        console.log(label_list[i]);
+        // p.textContent = label_list[i].join(", ");
+        let new_label = text_pad(label_list[i], len=4)
+        p.textContent = new_label.join(", ");
+        // console.log(label_list[i]);
     }
 }
 
@@ -219,4 +226,78 @@ function coordinate_conversion(data) {
     let width = Math.round(data.width * data.scaleX);
     let label = [top, left, height, width];
     return label
+}
+
+function text_pad(str_data, len=4) {
+    let new_label = [];
+    for (let text of str_data) {
+        text = `${text}`;
+        new_label.push(text.padStart(len, '0'));
+    }
+    return new_label
+}
+
+function label_fetch() {
+    let url = "/api/mi/label";
+    fetch(url).then(response => response.json())
+        .then((data) => {
+        if (data.data != null) {
+            console.log(data.data);
+            label_hid.value = data.data.fileid;
+            let label_list = data.data.label;
+            label_renew(label_list);
+            canvas_label_renew(label_list);
+        }
+    })
+    .catch((error) => {
+        console.log("err:", error)
+    });
+}
+
+label_save_btn.addEventListener('click', label_save)
+
+function label_save() {
+    canvas_state = canvas.toJSON();
+    let label_list = label_coordinate(canvas_state);
+    let label_data = {
+        "fileid":Number(label_hid.value),
+        "num":label_list.length,
+        "label":label_list
+    };
+    // console.log(label_data);
+    label_save_fetch(label_data);
+}
+
+function label_save_fetch(label_data) {
+    let url = "/api/mi/labelsave";
+    fetch(url,{
+        method:'POST',
+        body:JSON.stringify(label_data),
+        headers: {
+            'Content-Type': 'application/json'
+          }
+    }).then((res) => res.json())
+    .then((data) => {
+        if (data.ok) {
+            console.log(data);
+            alert("儲存 OK");
+        } else if (data.error) {
+            console.log(data);
+            alert(data.message);
+        }
+    })
+    .catch((error) => {
+        console.log("err:", error)
+    });
+}
+
+function canvas_label_renew(label_list) {
+    for(i=0;i<label_list.length;i++){
+        let top = label_list[i][0];
+        let left = label_list[i][1];
+        let height = label_list[i][2];
+        let width = label_list[i][3];
+        add_rect(canvas, width=width, height=height, left=left, top=top);
+    }
+
 }

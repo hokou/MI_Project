@@ -89,6 +89,7 @@ def get_file(file_id):
                 upload_folder = current_app.config['UPLOAD_FOLDER']
                 path = os.path.join(upload_folder,files_path,str(query.user_id),str(query.group_num))
                 session["file_path"] = f"{path}/{query.file_name}.dcm"
+                session["file_id"] = file_id
                 return redirect(url_for("main"))
             else:
                 return redirect(url_for("member"))
