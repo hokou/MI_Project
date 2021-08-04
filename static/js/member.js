@@ -72,6 +72,7 @@ function addblock(data){
         let p1 = document.createElement("p");
         let p2 = document.createElement("p");
         let p3 = document.createElement("p");
+        let close = addclose(data[i]["file_id"]);
 
         main.appendChild(div);
         div.appendChild(imgdiv);
@@ -80,6 +81,7 @@ function addblock(data){
         div.appendChild(p1);
         div.appendChild(p2);
         div.appendChild(p3);
+        div.appendChild(close);
 
         // div.className = "sub-block";
         div.classList.add("sub-block", "m-1");
@@ -89,5 +91,39 @@ function addblock(data){
         p1.textContent = data[i]["file_name"];
         p2.textContent = `patient ID：${data[i]["patient_ID"]}`;
         p3.textContent = `patient Name：${data[i]["patient_name"]}`;
+    }
+    let close_btn = document.querySelectorAll(".close");
+    close_addevent(close_btn);
+}
+
+function addclose(data){
+    let div = document.createElement("div");
+    let img = document.createElement("img");
+    let input = document.createElement("input");
+    div.appendChild(img);
+    div.appendChild(input);
+    div.className = "close";
+    img.className = "close-img";
+    input.type = "hidden";
+    input.value = data;
+    return div
+}
+
+function close_addevent(close) {
+    for (let i = 0; i < close.length; i++) {
+        close[i].addEventListener("click", e=> {
+            let close_select = e.target.querySelector('input').value;
+            console.log(close_select);
+            close_file(close_select);
+        });
+    }
+}
+
+function close_file(select) {
+    let yes = confirm('是否刪除檔案？');
+    if (yes) {
+        alert('確定');
+    } else {
+        alert('取消');
     }
 }
