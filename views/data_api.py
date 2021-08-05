@@ -1,6 +1,6 @@
 from flask import Blueprint, Flask, redirect, render_template, session, url_for, request, jsonify, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
-from model import db, Group, Files, FileData
+from model import db, Group, Files, FileData, LabelData
 import json
 from datetime import datetime
 import os
@@ -77,6 +77,32 @@ def load_data():
         print(e)
         res = error_json(error_message["2"])
         state = 500
+        return jsonify(res), state
+
+
+@data_api.route("/delect", methods=["DELETE"])
+def delect_file():
+    if request.method == "DELETE":
+        # try:
+        data = request.get_json()
+        if "id" in session:
+            user_id = session["id"]
+            file_id = int(data["fileid"])
+            delete_labeldata(file_id, user_id)
+            delete_filedata(file_id, user_id)
+            delete_files(file_id)
+            res = {
+                "ok": True
+            }
+            state = 200
+        else:
+            res = error_json(error_message["3"])
+            state = 200
+        # except Exception as e:
+        #     print(e)
+        #     res = error_json(error_message["2"])
+        #     state = 500
+    
         return jsonify(res), state
 
 
@@ -192,6 +218,27 @@ def load_files_data(query):
     }
 
     return res
+
+
+def delete_files(file_id):
+    query = Files.query.filter_by(file_id=file_id).first()
+    if query != None:
+        db.session.delete(query)
+        db.session.commit()
+
+
+def delete_filedata(file_id, user_id):
+    query = FileData.query.filter_by(file_id=file_id).first()
+    if query != None and query.user_id == user_id:
+        db.session.delete(query)
+        db.session.commit()
+
+
+def delete_labeldata(file_id, user_id):
+    query = LabelData.query.filter_by(file_id=file_id).first()
+    if query != None and query.user_id == user_id:
+        db.session.delete(query)
+        db.session.commit()
 
 
 def files_json(data, id, group_num):

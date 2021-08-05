@@ -113,7 +113,7 @@ function close_addevent(close) {
     for (let i = 0; i < close.length; i++) {
         close[i].addEventListener("click", e=> {
             let close_select = e.target.querySelector('input').value;
-            console.log(close_select);
+            // console.log(close_select);
             close_file(close_select);
         });
     }
@@ -122,8 +122,32 @@ function close_addevent(close) {
 function close_file(select) {
     let yes = confirm('是否刪除檔案？');
     if (yes) {
-        alert('確定');
+        delect_file(select);
+        // alert('確定');
     } else {
-        alert('取消');
+        // alert('取消');
     }
+}
+
+function delect_file(select) {
+    let url = "/api/data/delect";
+    let data = {
+        "fileid":select,
+    };
+    fetch(url,{
+        method:'DELETE',
+        body:JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((res) => res.json())
+    .then((data) => {
+        if (data.ok) {
+            console.log(data);
+            load_data();
+        } 
+    })
+    .catch((error) => {
+        console.log("err:", error)
+    });
 }

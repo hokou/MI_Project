@@ -78,7 +78,8 @@ def text_url(fileid):
         query = LabelData.query.filter_by(file_id=fileid).first()
         if int(session["id"]) == int(query.user_id):
             now = datetime.now()
-            time = now.strftime("%Y%m%d%H%M%S")
+            # time = now.strftime("%Y%m%d%H%M%S")
+            time = datetime.strftime(now, "%Y%m%d%H%M%S")
             print("time",time)
             path, name = labeltext_save(query.data,time)
             return send_from_directory(path, name, as_attachment=True)
