@@ -83,25 +83,26 @@ def load_data():
 @data_api.route("/delect", methods=["DELETE"])
 def delect_file():
     if request.method == "DELETE":
-        # try:
-        data = request.get_json()
-        if "id" in session:
-            user_id = session["id"]
-            file_id = int(data["fileid"])
-            delete_labeldata(file_id, user_id)
-            delete_filedata(file_id, user_id)
-            delete_files(file_id)
-            res = {
-                "ok": True
-            }
-            state = 200
-        else:
-            res = error_json(error_message["3"])
-            state = 200
-        # except Exception as e:
-        #     print(e)
-        #     res = error_json(error_message["2"])
-        #     state = 500
+        try:
+            data = request.get_json()
+            if "id" in session:
+                user_id = session["id"]
+                file_id = int(data["fileid"])
+                upload_folder = current_app.config['UPLOAD_FOLDER']
+                delete_labeldata(file_id, user_id)
+                delete_filedata(file_id, user_id, upload_folder)
+                delete_files(file_id)
+                res = {
+                    "ok": True
+                }
+                state = 200
+            else:
+                res = error_json(error_message["3"])
+                state = 200
+        except Exception as e:
+            print(e)
+            res = error_json(error_message["2"])
+            state = 500
     
         return jsonify(res), state
 
@@ -227,11 +228,15 @@ def delete_files(file_id):
         db.session.commit()
 
 
-def delete_filedata(file_id, user_id):
+def delete_filedata(file_id, user_id, upload_folder):
     query = FileData.query.filter_by(file_id=file_id).first()
     if query != None and query.user_id == user_id:
         db.session.delete(query)
         db.session.commit()
+        filepath = os.path.join(upload_folder,files_path,str(query.user_id),str(query.group_num))
+        imgpath = os.path.join(upload_folder,imgs_path,str(query.user_id),str(query.group_num))
+        os.remove(os.path.join(filepath,f"{query.file_name}.dcm"))
+        os.remove(os.path.join(imgpath,f"{query.file_name}.jpg"))
 
 
 def delete_labeldata(file_id, user_id):
