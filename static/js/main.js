@@ -177,7 +177,9 @@ linecolor.addEventListener('change',function(){
 
 rect.addEventListener('click',function(){
     add_rect(canvas);
-    label_renew();
+    canvas_state = canvas.toJSON();
+    let label_list = label_coordinate(canvas_state);
+    label_renew(label_list);
 })
 
 
