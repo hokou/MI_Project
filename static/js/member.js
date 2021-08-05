@@ -12,7 +12,7 @@ file_btn.addEventListener("click", upload);
 
 function upload() {
     let files = file_upload.files;
-    if (typeof (files) == "undefined" || files.size <= 0) {
+    if (typeof (files) == "undefined" || files.size <= 0 || files.length == 0) {
         alert("請選擇檔案");
         return;
     }
